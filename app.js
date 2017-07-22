@@ -48,16 +48,16 @@ NarrowItDownController.$inject = ['MenuSearchService','$filter'];
 function NarrowItDownController(MenuSearchService,$filter) {
   var menu = this;
  
-   menu.found=false;
+   menu.nothing=false;
    menu.searchTerm='';
  menu.foundItems=[];
   menu.find = function (searchTerm) {
     var p = MenuSearchService.getMatchedMenuItems(searchTerm);
-     menu.click=true;
+    
     p.then(function (response) {
        // console.log(response.data.menu_items);
       menu.foundItems=$filter('menuObjArrayFilter')( response.data.menu_items,searchTerm);
-      if(menu.foundItems.length>0)menu.found=true;
+      if(menu.foundItems.length>0)menu.nothing=true;
     }).catch(function (error) {
       console.log(error);
     });

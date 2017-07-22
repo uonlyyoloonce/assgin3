@@ -16,11 +16,11 @@
     <div class="form-group narrow-button">
       <button class="btn btn-primary" ng-click="menu.find(menu.searchTerm);">Narrow It Down For Me!</button>
 
-      <div ng-if="menu.click === true">
-      <div ng-if="menu.foundItems.length === 0">
+     
+      <div ng-if="menu.nothing">
         <h1>Nothing Found</h1>
       </div>
-    </div>
+    
     </div>
 
     <!-- found-items should be implemented as a component -->
