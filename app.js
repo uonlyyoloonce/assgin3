@@ -20,13 +20,10 @@ function FoundItemsDirective() {
       bindToController: true
     }
 
-  return ddo;
+  return ddo
 }
 
-function FoundItemsDirectiveDirectiveController()
-{
-  var list = this;
-}
+
 function menuObjArrayFilter() {
   
    return function(objArray,searchTerm)
