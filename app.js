@@ -5,54 +5,89 @@ angular.module('NarrowItDownApp', [])
 .controller('NarrowItDownController', NarrowItDownController)
 .service('MenuSearchService', MenuSearchService)
 .constant('ApiBasePath', "https://davids-restaurant.herokuapp.com")
+.filter('menuObjArrayFilter', menuObjArrayFilter  )
+.directive('foundItems', FoundItemsDirective);
 
-.filter('menuObjArrayFilter',function(){
-    var newobjArray=[];
+function FoundItemsDirective() {
+   var ddo = {
+    templateUrl: 't.html',
+    scope: {
+      items: '<',
+     
+     
+      onRemove: '&'
+    },
+    controller: FoundItemsDirectiveDirectiveController,
+    controllerAs: 'menu',
+    bindToController: true
+  };
+
+  return ddo;
+}
+
+function FoundItemsDirectiveDirectiveController()
+{
+  var list = this;
+}
+function menuObjArrayFilter() {
+  
    return function(objArray,searchTerm)
    {
+       var newobjArray=[];
        var objArrayLength=objArray.length;
        for(var i=0;i<objArrayLength;i++)
        {
            if(objArray[i].description.indexOf(searchTerm)>=0)
-           newobjArray.push(objArray[i]);
+            {
+
+             // console.log(objArray[i].description);
+                newobjArray.push(objArray[i]);
+            }
+         
        }
        
       return newobjArray;
    };
-
-});
-NarrowItDownController.$inject = ['MenuSearchService'];
-function NarrowItDownController(MenuSearchService) {
+}
+NarrowItDownController.$inject = ['MenuSearchService','$filter'];
+function NarrowItDownController(MenuSearchService,$filter) {
   var menu = this;
 
+   menu.searchTerm='';
 
-
-  menu.foundItems = function (shortName) {
-    var foundItems = MenuSearchService.getMatchedMenuItems(shortName);
-  
+  menu.found = function (searchTerm) {
+    var p = MenuSearchService.getMatchedMenuItems(searchTerm);
     
+    p.then(function (response) {
+       // console.log(response.data.menu_items);
+      menu.foundItems=$filter('menuObjArrayFilter')( response.data.menu_items,searchTerm);
+    }).catch(function (error) {
+      console.log(error);
+    });
   };
+
+  menu.removeItem=function (idx)
+  {
+    if(menu.foundItems.length>0)menu.foundItems.splice(idx,1);
+  }
 
 }
 
 
-MenuSearchService.$inject = ['$http', 'ApiBasePath','$filter'];
-function MenuSearchService($http, ApiBasePath,$filter) {
+MenuSearchService.$inject = ['$http', 'ApiBasePath'];
+function MenuSearchService($http, ApiBasePath) {
   var service = this;
 
  
 
   service.getMatchedMenuItems  = function (searchTerm) {
+
+   // console.log('searchTerm : ' + searchTerm );
     return   $http({
       method: "GET",
       url: (ApiBasePath + "/menu_items.json")
    
-    }).then(function (response) {
-        console.log(response.data.menu_items);
-     console.log( $filter('menuObjArrayFilter')( response.data.menu_items,searchTerm).length);
-    }).catch(function (error) {
-      console.log(error);
-    })
+    });
 
  
   };
