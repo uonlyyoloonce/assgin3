@@ -52,15 +52,19 @@ function NarrowItDownController(MenuSearchService,$filter) {
    menu.searchTerm='';
  menu.foundItems=[];
   menu.find = function (searchTerm) {
+     menu.nothing=false;
     var p = MenuSearchService.getMatchedMenuItems(searchTerm);
-    menu.nothing=false;
+   if(p!==''){
     p.then(function (response) {
        // console.log(response.data.menu_items);
+      
       menu.foundItems=$filter('menuObjArrayFilter')( response.data.menu_items,searchTerm);
       if(menu.foundItems.length==0)menu.nothing=true;
+      
     }).catch(function (error) {
       console.log(error);
     });
+    }else menu.nothing=true;
   };
 
   menu.removeItem=function (idx)
@@ -80,11 +84,15 @@ function MenuSearchService($http, ApiBasePath) {
   service.getMatchedMenuItems  = function (searchTerm) {
 
    // console.log('searchTerm : ' + searchTerm );
+   if(searchTerm!=='')
+    {
     return   $http({
       method: "GET",
       url: (ApiBasePath + "/menu_items.json")
    
     });
+    } 
+  else return '';
 
  
   };
