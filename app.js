@@ -53,7 +53,7 @@ function NarrowItDownController(MenuSearchService,$filter) {
  menu.foundItems=[];
   menu.find = function (searchTerm) {
     var p = MenuSearchService.getMatchedMenuItems(searchTerm);
-    
+    menu.nothing=false;
     p.then(function (response) {
        // console.log(response.data.menu_items);
       menu.foundItems=$filter('menuObjArrayFilter')( response.data.menu_items,searchTerm);
