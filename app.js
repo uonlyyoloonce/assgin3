@@ -49,7 +49,7 @@ function NarrowItDownController(MenuSearchService,$filter) {
   var menu = this;
 
    menu.searchTerm='';
-
+ menu.foundItems=[];
   menu.found = function (searchTerm) {
     var p = MenuSearchService.getMatchedMenuItems(searchTerm);
     
